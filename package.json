@@ -1,6 +1,6 @@
 {
   "name": "rest-api-service",
-  "version": "1.0.13",
+  "version": "1.0.15",
   "description": "Simple RESTful Api service for Node",
   "homepage": "https://github.com/colxi/rest-api-service",
   "repository": {
@@ -28,20 +28,25 @@
     "@types/cors": "^2.8.6",
     "@types/express": "^4.17.2",
     "@types/express-request-id": "^1.4.1",
-    "@types/mysql": "^2.15.8",
+    "@types/jest": "^24.0.24",
     "@types/node": "^12.12.17",
     "@typescript-eslint/eslint-plugin": "^2.12.0",
     "@typescript-eslint/parser": "^2.12.0",
     "eslint": "^6.8.0",
+    "jest": "^24.9.0",
+    "jest-each": "^24.9.0",
+    "jest-extended": "^0.11.2",
     "nodemon": "^2.0.2",
     "prettier": "^1.19.1",
+    "ts-jest": "^24.2.0",
     "ts-node": "^8.5.4",
     "tsconfig-paths": "^3.9.0",
     "tscpaths": "^0.0.9",
     "typescript": "^3.7.3"
   },
   "scripts": {
-    "prepublish": "yarn run build",
+    "prepublishOnly": "yarn run test && yarn run lint && yarn run build",
+    "test": "jest --config jestconfig.json",
     "lint": "yarn eslint ./src/**/* --ext ts,js",
     "build": "rm -rf ./dist && rm -rf ./types && tsc --project tsconfig.json && tscpaths -p tsconfig.json -s ./src -o ./dist",
     "start": "nodemon --watch 'src/**/*.ts' --exec 'ts-node -r tsconfig-paths/register' src/index.ts"
