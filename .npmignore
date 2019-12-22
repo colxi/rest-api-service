@@ -3,6 +3,10 @@
 node_modules
 vscode
 /src
+tsconfig.json
+.eslintrc
+.prettierrc
+.eslintignore
 
 # local env files
 .env.local
