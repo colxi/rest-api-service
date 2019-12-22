@@ -31,6 +31,17 @@ const RESTAPi = await RESTApiService.create(routes, {
 // done!
 ```
 
+## Installation
+
+This package can be installed localy with both `yarn` and `npm` :
+
+```bash
+# using yarn...
+$ yarn add rest-api-service
+# or with npm...
+$ npm install rest-api-service
+```
+
 ## Constructor Syntax
 
 The asynchronous constructor returns an instance to the RESTApiService.
