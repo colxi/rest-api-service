@@ -37,11 +37,11 @@ export default function createRequestInterceptor(
     /*
      * Handle HEAD network requests
      * -------------------------------------------------------------------------
-     * For known routes, network requests using the method HEAD should always
-     * return 200 with an empty body in the response
+     * For known routes, network requests using the method HEAD
+     * should always return 200 with an empty body in the response
      */
     if (expressRequest.method === 'HEAD') {
-      expressResponse.status(404).end()
+      expressResponse.status(200).end()
       return
     }
 

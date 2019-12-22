@@ -78,7 +78,6 @@ export class RESTApiServiceRequestMethods {
   public readonly PUT: string = 'put'
   public readonly PATCH: string = 'patch'
   public readonly DELETE: string = 'delete'
-  public readonly HEAD: string = 'head'
   public readonly GET: string = 'get'
 }
 

@@ -24,6 +24,13 @@ export default function initializeRequestRouter(
   )
 
   /*
+   * Add a listener for all OPTIONS requests and return 200 status Code
+   */
+  service.expressApp.options('*', (expressRequest, expressResponse) => {
+    expressResponse.status(200).end()
+  })
+
+  /*
    * Iterate provided routes collection
    */
   for (const routeDescriptor of routes) {
