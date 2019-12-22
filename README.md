@@ -33,7 +33,7 @@ const RESTAPi = await RESTApiService.create(routes, {
 
 ## Installation
 
-This package can be installed localy with both `yarn` and `npm` :
+This package can be installed locally with both `yarn` and `npm` :
 
 ```bash
 # using yarn...
@@ -75,12 +75,12 @@ The RESTApiService constructor accepts the following configuration options :
   port: number // default : 8080
   protocol: 'http' | 'https' // default : http
   verbose: boolean // default : false
-  logControllerErrors: boolean // default : false
+  logErrors: boolean // default : false
   cors: Object // default : {}
   auth: Function // default : ()=>true
   credentials: {
-    cert: string
-    key: string
+    cert: string // content of a .crt file
+    key: string // content of a .key file
   } // default : {}
 }
 ```
@@ -88,7 +88,7 @@ The RESTApiService constructor accepts the following configuration options :
 - `port`: Number of port to listen
 - `protocol`: Protocol to use
 - `verbose`: When set to true, activity will be output to console
-- `logControllerErrors`: When set to true, Controller errors will be printed in the console
+- `logErrors`: When set to true, Controller errors will be printed in the console
 - `cors`: Object to set the CORS configuration ([use this syntax](https://expressjs.com/en/resources/middleware/cors.html))
 - `auth`: Authorizer (sync or sync) function to block/allow access to a private endpoint. Receives a token as single argument, and must return a boolean
 - `credentials` : Object containing the secret key and the certificate for secure connections (only for https)
@@ -96,7 +96,7 @@ The RESTApiService constructor accepts the following configuration options :
 ## Route Controller
 
 ```typescript
-const myController = (response, { payload, parms, query }, token) => {
+const myController = (response, { payload, params, query }, token) => {
   // ...do some stuff
   response(200, { success: true })
 }
@@ -108,11 +108,11 @@ Controller methods are functions (sync or async) that perform specific actions r
 
 - Any error during a Controller execution will be catch and a `response(500)` (Server internal error) will be emitted as a response.
 
-> Controller errors will not be output to the console, unless the `logControllerErrors` option has been set to true during initializagtion stage.
+> Controller errors will not be output to the console, unless the `logErrors` option has been set to true during initialization stage.
 
 ### Route Controller Parameters:
 
-All Route controllers will be executed with the following parwaeters :
+All Route controllers will be executed with the following parameters :
 
 - **Response method** : Is a function provided as first argument to the Controller. It expects 2 values :
 
@@ -138,9 +138,9 @@ Rejected requests will be finished with a `401` status code.
 A pseudo-code implementation of an Authorizer could be the following:
 
 ```typescript
-const requestAutorizer = token => {
+const requestAuthorizer = token => {
   // perform token validation
-  const result = valiadteToken(token)
+  const result = validateToken(token)
   // allow or block according the validation
   return result ? true : false
 }
@@ -168,7 +168,7 @@ Types can be easily imported using :
 ```typescript
 import {
   RESTApiServiceOptions, // type for constructor options
-  RESTApiServiceRoute, // tyope for route definition
+  RESTApiServiceRoute, // type for route definition
   RESTApiServiceRequestAuthorizer, // type for request authorizer
   RESTApiServiceController, // type for route controller
   API_AUTH_REQUIRED // constant for route private flags
@@ -182,6 +182,8 @@ import {
 Available scripts :
 
 - `yarn start` : starts the service
+- `yarn lint` : run the linter
+- `yarn test` : run the tests
 - `yarn build` : compiles to javascript the library
 - `yarn publish` : compiles to javascript the library and publishes to npm registry
 

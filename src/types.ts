@@ -1,6 +1,7 @@
 import { CorsOptions } from 'cors'
 import { Server } from 'http'
 import { Application, IRouterMatcher, Request, Response } from 'express'
+import _RESTApiServiceError from '@/service-error'
 
 /**
  * Extend the express Request object with request id
@@ -15,6 +16,15 @@ declare module 'express-serve-static-core' {
  * Constant for flagging routes that require authentication
  */
 export const API_AUTH_REQUIRED = true
+
+/**
+ * RESTApiService custom error. Each error has a message and a code property.
+ */
+export const RESTApiServiceError = _RESTApiServiceError
+export interface RESTApiServiceErrorInterface {
+  message: string
+  code: number
+}
 
 /**
  * Console colors
@@ -109,50 +119,57 @@ export interface RESTApiServiceInstance {
   readonly port: number
   readonly authorizer: RESTApiServiceRequestAuthorizer
   readonly expressApp: RESTApiServiceExpressApp
-  logControllerErrors: boolean
+  logErrors: boolean
   verbose: boolean
   log: (...args: unknown[]) => void
 }
 
 /**
- *
+ * Object to define the HTTPS server credentials
  */
 export type RESTApiServiceHTTPSCredentials = {
   key: string
   cert: string
 }
 
-/**
- * Configuration object required for the RESTApiService initialization
- */
-export type RESTApiServiceOptions =
-  | {
-      readonly protocol?: 'http'
-      readonly cors?: RESTApiServiceHTTPServerCorsOptions
-      readonly port?: number
-      readonly verbose?: boolean
-      readonly auth?: RESTApiServiceRequestAuthorizer
-      readonly logControllerErrors?: boolean
-    }
-  | {
-      readonly protocol: 'https'
-      readonly credentials: RESTApiServiceHTTPSCredentials
-      readonly cors?: RESTApiServiceHTTPServerCorsOptions
-      readonly port?: number
-      readonly verbose?: boolean
-      readonly auth?: RESTApiServiceRequestAuthorizer
-      readonly logControllerErrors?: boolean
-    }
+type RESTApiServiceOptionsHTTP = {
+  readonly protocol?: 'http'
+  readonly cors?: RESTApiServiceHTTPServerCorsOptions
+  readonly port?: number
+  readonly verbose?: boolean
+  readonly auth?: RESTApiServiceRequestAuthorizer
+  readonly logErrors?: boolean
+}
 
+type RESTApiServiceOptionsHTTPS = {
+  readonly protocol: 'https'
+  readonly credentials: RESTApiServiceHTTPSCredentials
+  readonly cors?: RESTApiServiceHTTPServerCorsOptions
+  readonly port?: number
+  readonly verbose?: boolean
+  readonly auth?: RESTApiServiceRequestAuthorizer
+  readonly logErrors?: boolean
+}
+
+/**
+ * Configuration object after merging custom with user options
+ */
 export type RESTApiServiceEffectiveOptions = {
   readonly protocol: 'http' | 'https'
   readonly cors: RESTApiServiceHTTPServerCorsOptions
   readonly port: number
   readonly verbose: boolean
   readonly auth: RESTApiServiceRequestAuthorizer
-  readonly logControllerErrors: boolean
+  readonly logErrors: boolean
   readonly credentials?: RESTApiServiceHTTPSCredentials
 }
+
+/**
+ * Configuration object required for the RESTApiService initialization
+ */
+export type RESTApiServiceOptions =
+  | RESTApiServiceOptionsHTTP
+  | RESTApiServiceOptionsHTTPS
 
 /**
  * Network Route entry Object obtainer from a Route descriptor
@@ -200,3 +217,27 @@ export type RESTApiServiceController = (
   payload: RESTApiServiceRequestPayload,
   token: string
 ) => (undefined | void) | Promise<undefined | void>
+
+/**
+ * RESTApiService Error codes
+ */
+export enum RESTApiServiceErrorCodes {
+  // Options validation
+  INVALID_OPTIONS_TYPE = 90,
+  INVALID_OPTIONS_PORT = 91,
+  INVALID_OPTIONS_VERBOSE = 92,
+  INVALID_OPTIONS_LOG_ERRORS = 93,
+  INVALID_OPTIONS_CORS = 94,
+  INVALID_OPTIONS_AUTH = 95,
+  INVALID_OPTIONS_PROTOCOL = 96,
+  INVALID_OPTIONS_CREDENTIALS = 97,
+  INVALID_OPTIONS_CREDENTIALS_CERTIFICATE = 98,
+  INVALID_OPTIONS_CREDENTIALS_KEY = 99,
+  // Routes validation
+  INVALID_ROUTES_COLLECTION = 100,
+  INVALID_ROUTE_TYPE = 101,
+  INVALID_ROUTE_METHOD = 102,
+  INVALID_ROUTE_URI = 103,
+  INVALID_ROUTE_CONTROLLER = 104,
+  INVALID_ROUTE_PRIVATE_FLAG = 105
+}

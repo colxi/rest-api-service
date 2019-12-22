@@ -5,6 +5,7 @@ import addRequestId from 'express-request-id'
 import initializeRequestRouter from '@/request-router'
 import defaultOptions from '@/default-options'
 import validateOptions from '@/validate-options'
+import validateRoutes from '@/validate-routes'
 
 import http from 'http'
 import https from 'https'
@@ -19,7 +20,7 @@ import {
   RESTApiServiceRequestAuthorizer,
   RESTApiServiceHTTPSCredentials,
   ConsoleColor
-} from './types'
+} from '@/types'
 
 /**
  * Make the types available in imports
@@ -41,7 +42,8 @@ export default class RESTApiService implements RESTApiServiceInstance {
      * Perform input validation, and block the construction if input is not
      * properly formated (useful for  non typescript environments)
      */
-    validateOptions(routes, userOptions)
+    validateRoutes(routes)
+    validateOptions(userOptions)
 
     /*
      * Combine user options with default options. To prevent potential
@@ -107,7 +109,7 @@ export default class RESTApiService implements RESTApiServiceInstance {
     this.port = options.port
     this.authorizer = options.auth
     this.verbose = options.verbose
-    this.logControllerErrors = options.logControllerErrors
+    this.logErrors = options.logErrors
 
     this.log(
       `\nRESTApiServer : Listening at port ${options.port} (protocol=${options.protocol})`
@@ -142,7 +144,7 @@ export default class RESTApiService implements RESTApiServiceInstance {
 
   public readonly port: number
 
-  public logControllerErrors: boolean
+  public logErrors: boolean
 
   public verbose: boolean
 

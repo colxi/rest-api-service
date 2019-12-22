@@ -110,7 +110,7 @@ export default function createRequestInterceptor(
     } catch (e) {
       expressResponse.status(500).end()
       service.log(`${ConsoleColor.red}${expressRequest.id} RESPONSE : 500`)
-      if (service.logControllerErrors) console.error('CONTROLLER ERROR', e)
+      if (service.logErrors) console.error('CONTROLLER ERROR', e)
     }
 
     /*

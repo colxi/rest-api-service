@@ -1,12 +1,16 @@
-import { RESTApiServiceOptions } from '@/types'
+import { RESTApiServiceEffectiveOptions } from '@/types'
 
-const defaultOptions: RESTApiServiceOptions = {
+const defaultOptions: RESTApiServiceEffectiveOptions = {
   protocol: 'http',
   port: 8080,
   cors: {},
   verbose: false,
   auth: () => true,
-  logControllerErrors: false
+  logErrors: false,
+  credentials: {
+    key: '',
+    cert: ''
+  }
 }
 
 export default defaultOptions

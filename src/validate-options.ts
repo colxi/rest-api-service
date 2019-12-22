@@ -1,95 +1,115 @@
+import RESTApiServiceError from '@/service-error'
 import {
-  RESTApiServiceRoute,
   RESTApiServiceOptions,
-  RESTApiServiceRequestMethods
+  RESTApiServiceErrorCodes,
+  RESTApiServiceHTTPSCredentials
 } from '@/types'
 
-function validateUserRoutes(routes: RESTApiServiceRoute[]): void {
-  const allowedMethods = new RESTApiServiceRequestMethods()
-  /*
-   * Validate routes. Iterate all routes and check for proper formating
-   */
-  if (!Array.isArray(routes)) {
-    throw new Error('First argument must be an array')
-  }
-
-  for (const route of routes) {
-    // each route must be an array
-    if (!Array.isArray(route)) {
-      throw new Error(`Route "${route}" must be an array`)
-    }
-    // first index must be a valid http method
-    if (!Object.prototype.hasOwnProperty.call(allowedMethods, route[0])) {
-      throw new Error(
-        `Route "${route}" HTTP methods is invalid. Allowed methods are : ${Object.keys(
-          allowedMethods
-        )}`
-      )
-    }
-    // second index must be a string (URI pattern)
-    if (typeof route[1] !== 'string') {
-      throw new Error(`Route "${route}" URI is invalid. Expecting a string`)
-    }
-    // third argument must be a function (controller)
-    if (typeof route[2] !== 'function') {
-      throw new Error(
-        `Route "${route}" controller is invalid. Expecting a function`
-      )
-    }
-    // forth argument (optional) must be a boolean
-    if (typeof route[3] !== 'boolean') {
-      throw new Error(
-        `Route "${route}" private route flag is invalid. Expecting a boolean`
+export class OptionsValidator {
+  static checkOptionsObject(x: unknown): void {
+    // options must be an object
+    if (!x || typeof x !== 'object') {
+      throw new RESTApiServiceError(
+        'Second argument must be an object',
+        RESTApiServiceErrorCodes.INVALID_OPTIONS_TYPE
       )
     }
   }
-}
+  static checkProtocol(x: unknown): void {
+    // protocol (optional) must be http or https
+    if (typeof x !== 'string' || !['https', 'http'].includes(x)) {
+      throw new RESTApiServiceError(
+        'Options.protocol must be "http" or "https"',
+        RESTApiServiceErrorCodes.INVALID_OPTIONS_PROTOCOL
+      )
+    }
+  }
 
-function validateUserOptions(options: RESTApiServiceOptions): void {
-  /*
-   * Validate the options object. Check all internal properties
-   */
+  static checkPort(x: unknown): void {
+    // port (optional) must be a number
+    if (typeof x !== 'number') {
+      throw new RESTApiServiceError(
+        'Options.port must be a number',
+        RESTApiServiceErrorCodes.INVALID_OPTIONS_PORT
+      )
+    }
+  }
 
-  // options must be an object
-  if (!options || typeof options !== 'object') {
-    throw new Error('Second argument must be an object')
+  static checkVerbose(x: unknown): void {
+    // verbose (optional) must be a boolean
+    if (typeof x !== 'boolean') {
+      throw new RESTApiServiceError(
+        'Options.verbose must be a boolean',
+        RESTApiServiceErrorCodes.INVALID_OPTIONS_VERBOSE
+      )
+    }
   }
-  // protocol (optional) must be http or https
-  if (options.protocol && !['https', 'http'].includes(options.protocol)) {
-    throw new Error('Options.protocol must be "http" or "https"')
+
+  static checkCors(x: unknown): void {
+    // cors (optional) must be an object
+    if (typeof x !== 'object') {
+      throw new RESTApiServiceError(
+        'Options.cors must be an object',
+        RESTApiServiceErrorCodes.INVALID_OPTIONS_CORS
+      )
+    }
   }
-  // port (optional) must be a number
-  if (options.port && typeof options.port !== 'number') {
-    throw new Error('Options.port must be a number')
+
+  static checkAuth(x: unknown): void {
+    // auth (optional) must be a function
+    if (typeof x !== 'function') {
+      throw new RESTApiServiceError(
+        'Options.auth must be a function',
+        RESTApiServiceErrorCodes.INVALID_OPTIONS_AUTH
+      )
+    }
   }
-  // verbose (optional) must be a boolean
-  if (options.verbose && typeof options.verbose !== 'boolean') {
-    throw new Error('Options.verbose must be a boolean')
+
+  static checkLogErrors(x: unknown): void {
+    // logErrors (optional) must be a boolean
+    if (typeof x !== 'boolean') {
+      throw new RESTApiServiceError(
+        'Options.logErrors must be a boolean',
+        RESTApiServiceErrorCodes.INVALID_OPTIONS_LOG_ERRORS
+      )
+    }
   }
-  // logControllerErrors (optional) must be a boolean
-  if (
-    options.logControllerErrors &&
-    typeof options.logControllerErrors !== 'boolean'
-  ) {
-    throw new Error('Options.logControllerErrors must be a boolean')
-  }
-  // cors (optional) must be an object
-  if (options.cors && typeof options.cors !== 'object') {
-    throw new Error('Options.cors must be an object')
-  }
-  // auth (optional) must be a function
-  if (options.auth && typeof options.cors !== 'function') {
-    throw new Error('Options.auth must be a function')
+  static checkCredentials(x: unknown): void {
+    if (typeof x !== 'object' || x === null) {
+      throw new RESTApiServiceError(
+        'Options.credentials must be set when protocol="https"',
+        RESTApiServiceErrorCodes.INVALID_OPTIONS_CREDENTIALS
+      )
+    }
+    if (typeof (x as RESTApiServiceHTTPSCredentials).cert !== 'string') {
+      throw new RESTApiServiceError(
+        'Options.credentials.cert must be a string',
+        RESTApiServiceErrorCodes.INVALID_OPTIONS_CREDENTIALS_CERTIFICATE
+      )
+    }
+    if (typeof (x as RESTApiServiceHTTPSCredentials).key !== 'string') {
+      throw new RESTApiServiceError(
+        'Options.credentials.key must be a string',
+        RESTApiServiceErrorCodes.INVALID_OPTIONS_CREDENTIALS_KEY
+      )
+    }
   }
 }
 
 /**
  * Perform validation on the user input (useful for non typescript environments)
  */
-export default function validateOptions(
-  routes: RESTApiServiceRoute[],
-  options: RESTApiServiceOptions
-): void {
-  validateUserRoutes(routes)
-  validateUserOptions(options)
+export default function validateOptions(o: RESTApiServiceOptions): void {
+  const hasOption = (p: string): boolean => {
+    return Object.prototype.hasOwnProperty.call(o, p)
+  }
+
+  OptionsValidator.checkOptionsObject(o)
+  if (hasOption('protocol')) OptionsValidator.checkProtocol(o.protocol)
+  if (hasOption('port')) OptionsValidator.checkPort(o.port)
+  if (hasOption('verbose')) OptionsValidator.checkVerbose(o.verbose)
+  if (hasOption('cors')) OptionsValidator.checkCors(o.cors)
+  if (hasOption('auth')) OptionsValidator.checkAuth(o.auth)
+  if (hasOption('logErrors')) OptionsValidator.checkVerbose(o.logErrors)
+  if (o.protocol === 'https') OptionsValidator.checkCredentials(o.credentials)
 }
