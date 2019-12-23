@@ -6,6 +6,7 @@ import initializeRequestRouter from '@/request-router'
 import defaultOptions from '@/default-options'
 import validateOptions from '@/validate-options'
 import validateRoutes from '@/validate-routes'
+import httpServerWithShutdown from 'http-shutdown'
 
 import http from 'http'
 import https from 'https'
@@ -71,15 +72,19 @@ export default class RESTApiService implements RESTApiServiceInstance {
         expressApp.use(addRequestId())
         expressApp.use(cors(options.cors))
 
-        let httpServer: http.Server
+        let _httpServer: http.Server
         if (options.protocol === 'http') {
-          httpServer = http.createServer(expressApp)
+          _httpServer = http.createServer(expressApp)
         } else {
-          httpServer = https.createServer(
+          _httpServer = https.createServer(
             options.credentials as RESTApiServiceHTTPSCredentials,
             expressApp
           )
         }
+
+        const httpServer: RESTApiServiceHTTPServer = httpServerWithShutdown(
+          _httpServer
+        )
 
         expressApp.listen(options.port, () => {
           resolve(new RESTApiService(routes, options, expressApp, httpServer))
@@ -147,6 +152,15 @@ export default class RESTApiService implements RESTApiServiceInstance {
   public logErrors: boolean
 
   public verbose: boolean
+
+  public async destroy(): Promise<void> {
+    return new Promise((resolve, reject) => {
+      this.httpServer.forceShutdown(error => {
+        if (error) reject(error)
+        else resolve()
+      })
+    })
+  }
 
   public log(...message: unknown[]): void {
     if (this.verbose) console.log(...message, ConsoleColor.reset)

@@ -4,7 +4,7 @@
     "module": "commonjs",
     "lib": ["es6", "dom"],
     "declaration": true,
-    "declarationDir": "./types",
+    "declarationDir": "./dist/types",
     "outDir": "./dist",
     "rootDir": "./src",
     "baseUrl": "./src",
@@ -19,8 +19,9 @@
     "moduleResolution": "node",
     "esModuleInterop": true,
     "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+    "removeComments": true
   },
   "include": ["./src"],
-  "exclude": ["./dist", "./types", "node_modules", "./tests", "**/*.spec.ts"]
+  "exclude": ["./dist", "node_modules", "./tests", "**/*.spec.ts"]
 }

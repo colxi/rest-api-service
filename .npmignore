@@ -7,6 +7,10 @@ tsconfig.json
 .eslintrc
 .prettierrc
 .eslintignore
+jestconfig.json
+/tests
+/coverage
+*.spec.*
 
 # local env files
 .env.local

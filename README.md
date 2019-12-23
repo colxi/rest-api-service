@@ -1,12 +1,12 @@
 # rest-api-service
 
-RESTAPiService microlibrary brings a quick and flexible solution to initiate a generic node RESTful API server service.
+RESTAPiService microlibrary brings a quick and flexible solution to initiate a generic RESTful API server application with NodeJs.
 
 - ✅ Flexible & Configurable
 - ✅ Tiny & light : only 30 kB
-- ✅ Private Endpoint (token authentication)
+- ✅ Private Endpoints supported (token authentication)
 - ✅ Support for secure connections ( https )
-- ✅ Minimum boilerplate
+- ✅ Minimum boilerplate to initialize
 - ✅ Simple routes declaration syntax
 - ✅ ES6 & CommonJS module import syntax supported (import & require)
 - ✅ Typescript support
@@ -14,18 +14,22 @@ RESTAPiService microlibrary brings a quick and flexible solution to initiate a g
 Usage example :
 
 ```typescript
+// import the module
 import RESTApiService from 'rest-api-service'
+// or using require...
+// const RESTApiService = require('rest-api-service').default
 
 // declare api routes
-const routes = [
+const myRoutes = [
   ['GET', 'user/:id/profile', Controllers.user.getProfile, false],
   ['POST', 'user/:id/email', Controllers.user.setEmail, true]
 ]
 
 // initialize service
-const RESTAPi = await RESTApiService.create(routes, {
+const myService = await RESTApiService.create(myRoutes, {
   protocol: 'http',
-  port: 8080
+  port: 8080,
+  verbose: true
 })
 
 // done!
@@ -44,27 +48,27 @@ $ npm install rest-api-service
 
 ## Constructor Syntax
 
-The asynchronous constructor returns an instance to the RESTApiService.
+The asynchronous constructor initiates the service and returns an instance of the RESTApiService.
 
 ```typescript
 async RESTApiService.create( routes:RESTApiServiceRoute[] [, options:RESTApiServiceOptions] )
 ```
 
 - `routes` : Array containing a collection of routes.
-- `options` (optional) : Object containing the initialization options.
+- `options` (optional) : Object containing the configuration options.
 
 ## Routes Syntax
 
-The RESTApiService constructor expects you to provide a Collection (array) of routes Routes. Each route is itself an Array too, which is expected to have the following structure :
+The RESTApiService constructor expects you to provide a Collection (array) of routes. Each route is itself an Array too, and is expected to have the following structure (indexes values) :
 
 ```
 [HTTPMethod, URIPattern, RouteController, PrivateRouteFlag]
 ```
 
 - `HTTPMethod` (string) : Available methods : `GET | POST | PUT | PATCH | DELETE`
-- `URIPattern` (string) : Define the endpoints at which requests can be made. Route paths can be string patterns, containing **route parameters**, to capture values ([more info here](https://expressjs.com/tr/guide/routing.html))
+- `URIPattern` (string) : Define the endpoints at which requests can be made. Route paths must be string patterns, containing -if needed- **route parameters**, to capture values ([more info here](https://expressjs.com/tr/guide/routing.html))
 - `RouteController`(function) : Method to handle the calls to the different endpoints.
-- `PrivateRouteFlag` (boolean, optional) : Boolean value to flag those endpoints that are private and require authentication
+- `PrivateRouteFlag` (boolean, optional) : Boolean value to flag those endpoints that are private and require authentication.
 
 ## Initialization options
 
@@ -81,7 +85,7 @@ The RESTApiService constructor accepts the following configuration options :
   credentials: {
     cert: string // content of a .crt file
     key: string // content of a .key file
-  } // default : {}
+  }
 }
 ```
 
@@ -91,7 +95,7 @@ The RESTApiService constructor accepts the following configuration options :
 - `logErrors`: When set to true, Controller errors will be printed in the console
 - `cors`: Object to set the CORS configuration ([use this syntax](https://expressjs.com/en/resources/middleware/cors.html))
 - `auth`: Authorizer (sync or sync) function to block/allow access to a private endpoint. Receives a token as single argument, and must return a boolean
-- `credentials` : Object containing the secret key and the certificate for secure connections (only for https)
+- `credentials` : Object containing the secret key and the certificate for secure connections (only required when using https protocol)
 
 ## Route Controller
 
@@ -102,45 +106,45 @@ const myController = (response, { payload, params, query }, token) => {
 }
 ```
 
-Controller methods are functions (sync or async) that perform specific actions related to its endpoint, and execute the `response` method to return the result. **They are not meant to return any value**.
+Controller methods are functions (sync or async) that handle the calls to an endpoint. **They are not meant to return any value**, instead they can execute the provided `response` method to deliver the result of their operations to the client.
 
 - If the controller method finishes its execution without executing the `response` method, a `response(200)` will be executed automatically.
 
-- Any error during a Controller execution will be catch and a `response(500)` (Server internal error) will be emitted as a response.
+- Any unhandled error triggered during a Controller execution will be catch and a `response(500)` (Server internal error) will be emitted as a response to the client.
 
-> Controller errors will not be output to the console, unless the `logErrors` option has been set to true during initialization stage.
+> Controller errors will not be output to the console unless the `logErrors` option has been set to true during initialization stage.
 
 ### Route Controller Parameters:
 
-All Route controllers will be executed with the following parameters :
+All Route controllers will be invoked providing to them the following parameters :
 
-- **Response method** : Is a function provided as first argument to the Controller. It expects 2 values :
+- **Response method** : Is a function provided as first argument to the Controller. It can be used to emit a response to the client, it accepts 2 parameters :
 
   - Status Code : Number representing the HTTP status code
-  - Data : JSON object containing the data to return
+  - Data (optional) : JSON object containing the data to return
 
-- **Payload** : Provided as the second argument, is an object that acts as a container for all the incoming data, which is grouped (depending of its source) in the following properties :
+- **Payload** : Provided as the second argument, is an object that acts as a container for all the incoming -client provided- data, which is grouped , according to its source, in the following properties :
 
   - `payload` : Body of the request (for requests like POST or PUT)
   - `params` : Any URL parameter from the route (eg : user/:id )
   - `query` : Any url query parameter (eg : ?foo=bar)
 
-- **Token** : In the third argument the Route Controller receives the auth token extracted frm the request header. Is specially useful to identify the requested.
+- **Token** : In the third argument the Route Controller receives the auth token extracted from the request header (auth-token header). Is specially useful to identify the requester.
 
 ## Route Access Authorizer
 
-Those routes that are declared with the `PrivateRouteFlag` set to `true` will trigger the execution of the Authorizer (provided during initialization stge with the `auth` property)
+Those routes that are declared with the `PrivateRouteFlag` set to `true` will trigger the execution of the Authorizer (provided during initialization stage with the `auth` property)
 
-The `Route Authorizer` (sync or async) function receives the request auth token (extracted from the `auth-token` request header) , and returns a `boolean` indicating if the request can proceed or must be blocked.
+The `Route Authorizer` (sync or async) function receives the request auth token (extracted from the `auth-token` request header) , and must return a `boolean` indicating if the request can proceed or must be blocked.
 
 Rejected requests will be finished with a `401` status code.
 
 A pseudo-code implementation of an Authorizer could be the following:
 
 ```typescript
-const requestAuthorizer = token => {
-  // perform token validation
-  const result = validateToken(token)
+function requestAuthorizer(token) {
+  // ...perform token validation
+  const result = myTokenValidationRoutine(token)
   // allow or block according the validation
   return result ? true : false
 }
@@ -151,7 +155,7 @@ const requestAuthorizer = token => {
 CORS can be configured during initialization stage using the `cors` option.
 An example of a permissive configuration, which allows request from any source would be :
 
-```typescript
+```json
  "cors": {
     "credentials": true,
     "origin": "*"
@@ -161,9 +165,18 @@ An example of a permissive configuration, which allows request from any source w
 More information about setting up CORS , and available CORS configuration can be found here :
 https://expressjs.com/en/resources/middleware/cors.html
 
+## Stop the service
+
+The `destroy` method will terminate and shutdown gracefully the server and all its connections.
+
+```typescript
+const myService = await RESTApiService.create()
+await myService.destroy()
+```
+
 ## Typescript support
 
-Types can be easily imported using :
+RESTApiService ha been implemented using Typescript. Types signatures can be easily imported using :
 
 ```typescript
 import {
@@ -175,7 +188,7 @@ import {
 } from 'rest-api-service'
 ```
 
-\*Additional types are also available
+\*Additional types are also available for import
 
 ## Development
 

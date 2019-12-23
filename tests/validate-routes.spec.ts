@@ -14,13 +14,12 @@ function getErrorFrom(f): RESTApiServiceError {
 
 describe('Validate Routes collection (direct)', (): void => {
   it('Succeeds for valid route collection ', (): void => {
-    // prettier-ignore
     const a = [
-      'GET', '/foo/bar', (): void => null, true,
-      'POST', '/foo/:id', (): void => null, false,
-      'PUT', '/foo', (): void => null,
+      ['GET', '/foo/bar', (): void => null, true],
+      ['POST', '/foo/:id', (): void => null, false],
+      ['PUT', '/foo', (): void => null]
     ]
-    const t = (): void => validateRoutes([a])
+    const t = (): void => validateRoutes(a)
     expect(t).not.toThrowError()
   })
 })
@@ -31,8 +30,8 @@ describe('Validate Routes collection', (): void => {
     expect(t).not.toThrowError()
   })
 
-  const invalidCollection = [{}, 1, '', 'FOO', true, false, undefined, null]
-  each(invalidCollection).it('Fails for invalid value  %p ', a => {
+  const invalidValues = [{}, 1, '', 'FOO', true, false, undefined, null]
+  each(invalidValues).it('Fails for invalid value  %p ', a => {
     const t = (): void => RoutesValidator.checkCollectionType(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
@@ -47,8 +46,8 @@ describe('Validate Route type', (): void => {
     expect(t).not.toThrowError()
   })
 
-  const invalidRouteEntry = [{}, 1, '', 'FOO', true, false, undefined, null]
-  each(invalidRouteEntry).it('Fails for invalid value  %p ', a => {
+  const invalidValues = [{}, 1, '', 'FOO', true, false, undefined, null]
+  each(invalidValues).it('Fails for invalid value  %p ', a => {
     const t = (): void => RoutesValidator.checkRouteType(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
@@ -58,14 +57,14 @@ describe('Validate Route type', (): void => {
 })
 
 describe('Validate Route Method', (): void => {
-  const validMethod = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
-  each(validMethod).it('Succeeds for valid value  %p ', a => {
+  const validValues = ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']
+  each(validValues).it('Succeeds for valid value  %p ', a => {
     const t = (): void => RoutesValidator.checkMethod(a)
     expect(t).not.toThrowError()
   })
 
-  const invalidMethod = [{}, [], 1, '', 'FOO', true, false, undefined, null]
-  each(invalidMethod).it('Fails for invalid value  %p ', a => {
+  const invalidValues = [{}, [], 1, '', 'FOO', true, false, undefined, null]
+  each(invalidValues).it('Fails for invalid value  %p ', a => {
     const t = (): void => RoutesValidator.checkMethod(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
@@ -80,8 +79,8 @@ describe('Validate Route URI', (): void => {
     expect(t).not.toThrowError()
   })
 
-  const invalidRouteEntry = [{}, [], 1, true, false, undefined, null]
-  each(invalidRouteEntry).it('Fails for invalid value  %p ', a => {
+  const invalidValues = [{}, [], 1, true, false, undefined, null]
+  each(invalidValues).it('Fails for invalid value  %p ', a => {
     const t = (): void => RoutesValidator.checkURI(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
@@ -96,8 +95,8 @@ describe('Validate Route Controller', (): void => {
     expect(t).not.toThrowError()
   })
 
-  const invalidRouteEntry = [{}, [], 1, '', 'FOO', true, false, undefined, null]
-  each(invalidRouteEntry).it('Fails for invalid value  %p ', a => {
+  const invalidValues = [{}, [], 1, '', 'FOO', true, false, undefined, null]
+  each(invalidValues).it('Fails for invalid value  %p ', a => {
     const t = (): void => RoutesValidator.checkController(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
@@ -112,8 +111,8 @@ describe('Validate Route PrivateFlag', (): void => {
     expect(t).not.toThrowError()
   })
 
-  const invalidRouteEntry = [{}, [], 1, '', 'FOO', undefined, null]
-  each(invalidRouteEntry).it('Fails for invalid value  %p ', a => {
+  const invalidValues = [{}, [], 1, '', 'FOO', undefined, null]
+  each(invalidValues).it('Fails for invalid value  %p ', a => {
     const t = (): void => RoutesValidator.checkPrivateFlag(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(

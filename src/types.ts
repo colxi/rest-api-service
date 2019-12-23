@@ -44,7 +44,11 @@ export type PlainObject = { [k: string]: unknown } & { prototype?: never }
 /**
  * Instance of an http Server (alias)
  */
-export type RESTApiServiceHTTPServer = Server
+type callbackFunction = (error?: Error) => void
+export interface RESTApiServiceHTTPServer extends Server {
+  shutdown: (callback: callbackFunction) => void
+  forceShutdown: (callback: callbackFunction) => void
+}
 
 /**<
  * Instance of an express Application (alias)

@@ -8,9 +8,9 @@ import {
 export class OptionsValidator {
   static checkOptionsObject(x: unknown): void {
     // options must be an object
-    if (!x || typeof x !== 'object') {
+    if (typeof x !== 'object' || x === null || Array.isArray(x)) {
       throw new RESTApiServiceError(
-        'Second argument must be an object',
+        'Options must be an object',
         RESTApiServiceErrorCodes.INVALID_OPTIONS_TYPE
       )
     }
@@ -47,7 +47,7 @@ export class OptionsValidator {
 
   static checkCors(x: unknown): void {
     // cors (optional) must be an object
-    if (typeof x !== 'object') {
+    if (typeof x !== 'object' || x === null || Array.isArray(x)) {
       throw new RESTApiServiceError(
         'Options.cors must be an object',
         RESTApiServiceErrorCodes.INVALID_OPTIONS_CORS
@@ -75,7 +75,7 @@ export class OptionsValidator {
     }
   }
   static checkCredentials(x: unknown): void {
-    if (typeof x !== 'object' || x === null) {
+    if (typeof x !== 'object' || x === null || Array.isArray(x)) {
       throw new RESTApiServiceError(
         'Options.credentials must be set when protocol="https"',
         RESTApiServiceErrorCodes.INVALID_OPTIONS_CREDENTIALS
