@@ -1,6 +1,6 @@
 {
   "name": "rest-api-service",
-  "version": "1.0.19",
+  "version": "1.0.20",
   "description": "Simple RESTful Api service for Node",
   "homepage": "https://github.com/colxi/rest-api-service",
   "repository": {
