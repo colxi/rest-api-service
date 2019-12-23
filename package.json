@@ -1,6 +1,6 @@
 {
   "name": "rest-api-service",
-  "version": "1.0.20",
+  "version": "1.0.21",
   "description": "Simple RESTful Api service for Node",
   "homepage": "https://github.com/colxi/rest-api-service",
   "repository": {
@@ -15,7 +15,7 @@
     "rest api service"
   ],
   "main": "dist/index.js",
-  "types": "types/index.d.ts",
+  "types": "dist/index.d.ts",
   "author": "colxi",
   "license": "MIT",
   "dependencies": {
