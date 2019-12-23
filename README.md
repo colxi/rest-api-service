@@ -1,5 +1,9 @@
 # rest-api-service
 
+[![...](https://img.shields.io/badge/types-available-blue.svg)](https://github.com/colxi/midi-parser-js)
+[![...](https://img.shields.io/badge/tests-pass-green.svg)](https://github.com/colxi/midi-parser-js)
+[![...](https://img.shields.io/badge/licence-MIT-brightgreen.svg)](https://www.npmjs.com/package/midi-parser-js)
+
 RESTAPiService microlibrary brings a quick and flexible solution to initiate a generic RESTful API server application with NodeJs.
 
 - ✅ Flexible & Configurable
