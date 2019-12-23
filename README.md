@@ -9,7 +9,7 @@
 RESTAPiService microlibrary brings a quick and flexible solution to initiate a generic RESTful API server application with NodeJs.
 
 - ✅ Flexible & Configurable
-- ✅ Tiny & light : only 30 kB
+- ✅ Tiny & light : about 30 kB
 - ✅ Private Endpoints supported (token authentication)
 - ✅ Support for secure connections ( https )
 - ✅ Minimum boilerplate to initialize
@@ -176,7 +176,7 @@ https://expressjs.com/en/resources/middleware/cors.html
 The `destroy` method will terminate and shutdown gracefully the server and all its connections.
 
 ```typescript
-const myService = await RESTApiService.create()
+const myService = await RESTApiService.create(myRoutes)
 await myService.destroy()
 ```
 
@@ -194,7 +194,7 @@ import {
 } from 'rest-api-service'
 ```
 
-\*Additional types are also available for import
+> \*Additional types are also available for import
 
 ## Development
 
