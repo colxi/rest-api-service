@@ -1,3 +1,5 @@
+![rest-api-service](docs/logo.png?raw=true 'rest-api-service')
+
 # rest-api-service
 
 [![...](https://img.shields.io/badge/types-available-blue.svg)](https://github.com/colxi/midi-parser-js)

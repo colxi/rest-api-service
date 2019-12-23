@@ -10,6 +10,7 @@ tsconfig.json
 jestconfig.json
 /tests
 /coverage
+/docs
 *.spec.*
 
 # local env files
