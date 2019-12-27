@@ -1,6 +1,6 @@
 {
   "name": "rest-api-service",
-  "version": "1.0.22",
+  "version": "1.0.24",
   "description": "Simple RESTful Api service for Node",
   "homepage": "https://github.com/colxi/rest-api-service",
   "repository": {
@@ -23,7 +23,8 @@
     "cors": "^2.8.5",
     "express": "^4.17.1",
     "express-request-id": "^1.4.1",
-    "http-shutdown": "^1.2.1"
+    "http-shutdown": "^1.2.1",
+    "zone.js": "^0.10.2"
   },
   "devDependencies": {
     "@types/cors": "^2.8.6",
