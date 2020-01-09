@@ -19,16 +19,16 @@ RESTAPiService microlibrary brings a quick and flexible solution to initiate a g
 
 Usage example :
 
-```typescript
-// import the module
+```javascript
+// import the library and some controllers
 import RESTApiService from 'rest-api-service'
-// or using require...
-// const RESTApiService = require('rest-api-service').default
+import Controllers from './controllers'
 
 // declare api routes
 const myRoutes = [
-  ['GET', 'user/:id/profile', Controllers.user.getProfile, false],
-  ['POST', 'user/:id/email', Controllers.user.setEmail, true]
+  ['GET', 'user/:id/profile', Controllers.user.getSomething, false],
+  ['POST', 'user/:id/email', Controllers.user.setSomething, true]
+  // ...
 ]
 
 // initialize service
@@ -41,6 +41,26 @@ const myService = await RESTApiService.create(myRoutes, {
 // done!
 ```
 
+The Controllers :
+
+```javascript
+export default {
+  user: {
+    getSomething(response, payload, token) {
+      // retrieve "something" , and return it...
+      const something = my_db_select_something(payload.body.something.id)
+      if (something) response(200, { something })
+      else response(404)
+    },
+    setSomething(response, payload, token) {
+      // save "something" and respond with status 200
+      my_db_insert_something(payload.body.something)
+      response(200)
+    }
+  }
+}
+```
+
 ## Installation
 
 This package can be installed locally with both `yarn` and `npm` :
@@ -50,6 +70,15 @@ This package can be installed locally with both `yarn` and `npm` :
 $ yarn add rest-api-service
 # or with npm...
 $ npm install rest-api-service
+```
+
+Once installed, you are ready tom import it to your project.
+
+```typescript
+// import using ES& syntax
+import RESTApiService from 'rest-api-service'
+// or using COMMONJS syntax
+const RESTApiService = require('rest-api-service').default
 ```
 
 ## Constructor Syntax
@@ -106,7 +135,7 @@ The RESTApiService constructor accepts the following configuration options :
 ## Route Controller
 
 ```typescript
-const myController = (response, { payload, params, query }, token) => {
+const myController = (response, { body, params, query }, token) => {
   // ...do some stuff
   response(200, { success: true })
 }
@@ -131,9 +160,9 @@ All Route controllers will be invoked providing to them the following parameters
 
 - **Payload** : Provided as the second argument, is an object that acts as a container for all the incoming -client provided- data, which is grouped , according to its source, in the following properties :
 
-  - `payload` : Body of the request (for requests like POST or PUT)
-  - `params` : Any URL parameter from the route (eg : user/:id )
-  - `query` : Any url query parameter (eg : ?foo=bar)
+  - `body` (JSON) : Body of the request (for requests like POST or PUT)
+  - `params` (JSON) : Any URL parameter from the route (eg : user/:id )
+  - `query` (JSON) : Any url query parameter (eg : ?foo=bar)
 
 - **Token** : In the third argument the Route Controller receives the auth token extracted from the request header (auth-token header). Is specially useful to identify the requester.
 

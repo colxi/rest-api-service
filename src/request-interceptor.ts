@@ -1,3 +1,5 @@
+import 'zone.js'
+
 import {
   RESTApiServiceInstance,
   RESTApiServiceHTTPServerRequest,
@@ -93,7 +95,7 @@ export default function createRequestInterceptor(
      * accessible using this object
      */
     const payload: RESTApiServiceRequestPayload = {
-      payload: expressRequest.body || {},
+      body: expressRequest.body || {},
       params: expressRequest.params || {},
       query: expressRequest.query || {}
     }
@@ -101,25 +103,43 @@ export default function createRequestInterceptor(
     /*
      * Call the route Controller
      * -------------------------------------------------------------------------
-     * Perform the call to the controller, providing the responder method,
-     * the payload and the request auth token. Handle any potential runtime
-     * error and return an error 500 (Server internal error)
+     * Generate a unique Zone for the request, in order to be able to catch
+     * any potential error that happens during execution of the Controller.
      */
-    try {
-      await route.controller(responder, payload, token)
-    } catch (e) {
-      expressResponse.status(500).end()
-      service.log(`${ConsoleColor.red}${expressRequest.id} RESPONSE : 500`)
-      if (service.logErrors) console.error('CONTROLLER ERROR', e)
-    }
+    Zone.current
+      .fork({
+        name: String(expressRequest.id),
+        /**
+         * Handle any potential runtime error and return an error 500 response
+         * (Server internal error)
+         */
+        onHandleError: function(parent, current, target, e): boolean {
+          expressResponse.status(500).end()
+          service.log(`${ConsoleColor.red}${expressRequest.id} RESPONSE : 500`)
+          if (service.logErrors) console.error('CONTROLLER ERROR', e)
+          /**
+           * Return false to prevent the error to be re-thrown
+           */
+          return false
+        }
+      })
+      .runGuarded(async () => {
+        /**
+         * Perform the call to the controller, providing the responder method,
+         * the payload and the request auth token.
+         */
+        await route.controller(responder, payload, token)
 
-    /*
-     * ...if Controller didn't emit a response send a response with code 200
-     */
-    if (!expressResponse.headersSent) {
-      expressResponse.status(200).json({})
-      service.log(`${ConsoleColor.green}${expressRequest.id} RESPONSE : 200`)
-    }
+        /*
+         * ...if Controller didn't emit a response send a response with code 200
+         */
+        if (!expressResponse.headersSent) {
+          expressResponse.status(200).json({})
+          service.log(
+            `${ConsoleColor.green}${expressRequest.id} RESPONSE : 200`
+          )
+        }
+      })
 
     /*
      * Done !

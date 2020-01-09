@@ -39,7 +39,7 @@ export enum ConsoleColor {
 /**
  * Generic type for plain javascript objects
  */
-export type PlainObject = { [k: string]: unknown } & { prototype?: never }
+export type PlainObject = { [k: string]: any } & { prototype?: never }
 
 /**
  * Instance of an http Server (alias)
@@ -190,9 +190,9 @@ export interface RESTApiServiceRouteDescriptor {
  * and url query params
  */
 export interface RESTApiServiceRequestPayload {
-  readonly payload: PlainObject
-  readonly params: PlainObject
-  readonly query: PlainObject
+  readonly body: unknown
+  readonly params: unknown
+  readonly query: unknown
 }
 
 /**
@@ -210,7 +210,7 @@ export type RESTApiServiceRequestInterceptor = (
 export type RESTApiServiceRequestResponder = (
   statusCode: number,
   responseData?: PlainObject
-) => unknown
+) => void
 
 /**
  * Method bound to a route, that will be executed when network request against

@@ -36,7 +36,7 @@ describe('Requests Handling (public endpoints)', () => {
     })
     expect(publicEndpointController).toHaveBeenCalledWith(
       expect.any(Function),
-      { params: { id: '666' }, payload: {}, query: {} },
+      { params: { id: '666' }, body: {}, query: {} },
       'undefined'
     )
   })
@@ -47,7 +47,7 @@ describe('Requests Handling (public endpoints)', () => {
     })
     expect(publicEndpointController).toHaveBeenCalledWith(
       expect.any(Function),
-      { params: { id: '666' }, payload: {}, query: { data: '777' } },
+      { params: { id: '666' }, body: {}, query: { data: '777' } },
       'undefined'
     )
   })
@@ -60,7 +60,7 @@ describe('Requests Handling (public endpoints)', () => {
     })
     expect(publicEndpointController).toHaveBeenCalledWith(
       expect.any(Function),
-      { params: { id: '666' }, payload: { data: 777 }, query: {} },
+      { params: { id: '666' }, body: { data: 777 }, query: {} },
       'undefined'
     )
   })
