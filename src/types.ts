@@ -1,7 +1,19 @@
 import { CorsOptions } from 'cors'
 import { Server } from 'http'
 import { Application, IRouterMatcher, Request, Response } from 'express'
-import _RESTApiServiceError from '@/service-error'
+
+/**
+ * Const Object Values & keys
+ * (ObjectValues type can be used as a safer substitute for enum) : prevents
+ * invalid values assignment
+ */
+// prettier-ignore
+interface PlainObjectValues {
+  [key: string]:  | bigint | boolean | null | number | string  | symbol
+                  | undefined | Record<string, any> | PlainObjectValues
+}
+export type ObjectValues<T extends PlainObjectValues> = T[keyof T]
+export type ObjectKeys<T extends PlainObjectValues> = keyof T
 
 /**
  * Extend the express Request object with request id
@@ -18,28 +30,20 @@ declare module 'express-serve-static-core' {
 export const API_AUTH_REQUIRED = true
 
 /**
- * RESTApiService custom error. Each error has a message and a code property.
- */
-export const RESTApiServiceError = _RESTApiServiceError
-export interface RESTApiServiceErrorInterface {
-  message: string
-  code: number
-}
-
-/**
  * Console colors
  */
-export enum ConsoleColor {
-  green = '\x1b[32m$',
-  red = '\x1b[31m',
-  yellow = '\x1b[33m',
-  reset = '\x1b[0m'
-}
+export const ConsoleColor = {
+  green: '\x1b[32m$',
+  red: '\x1b[31m',
+  yellow: '\x1b[33m',
+  reset: '\x1b[0m'
+} as const
+export type ConsoleColor = ObjectValues<typeof ConsoleColor>
 
 /**
  * Generic type for plain javascript objects
  */
-export type PlainObject = { [k: string]: any } & { prototype?: never }
+// export type PlainObject = { [k: string]: any } & { prototype?: never }
 
 /**
  * Instance of an http Server (alias)
@@ -209,7 +213,7 @@ export type RESTApiServiceRequestInterceptor = (
  */
 export type RESTApiServiceRequestResponder = (
   statusCode: number,
-  responseData?: PlainObject
+  responseData?: Record<string, any>
 ) => void
 
 /**
@@ -225,23 +229,47 @@ export type RESTApiServiceController = (
 /**
  * RESTApiService Error codes
  */
-export enum RESTApiServiceErrorCodes {
+export const RESTApiServiceErrorCode = {
   // Options validation
-  INVALID_OPTIONS_TYPE = 90,
-  INVALID_OPTIONS_PORT = 91,
-  INVALID_OPTIONS_VERBOSE = 92,
-  INVALID_OPTIONS_LOG_ERRORS = 93,
-  INVALID_OPTIONS_CORS = 94,
-  INVALID_OPTIONS_AUTH = 95,
-  INVALID_OPTIONS_PROTOCOL = 96,
-  INVALID_OPTIONS_CREDENTIALS = 97,
-  INVALID_OPTIONS_CREDENTIALS_CERTIFICATE = 98,
-  INVALID_OPTIONS_CREDENTIALS_KEY = 99,
+  INVALID_OPTIONS_TYPE: 90,
+  INVALID_OPTIONS_PORT: 91,
+  INVALID_OPTIONS_VERBOSE: 92,
+  INVALID_OPTIONS_LOG_ERRORS: 93,
+  INVALID_OPTIONS_CORS: 94,
+  INVALID_OPTIONS_AUTH: 95,
+  INVALID_OPTIONS_PROTOCOL: 96,
+  INVALID_OPTIONS_CREDENTIALS: 97,
+  INVALID_OPTIONS_CREDENTIALS_CERTIFICATE: 98,
+  INVALID_OPTIONS_CREDENTIALS_KEY: 99,
   // Routes validation
-  INVALID_ROUTES_COLLECTION = 100,
-  INVALID_ROUTE_TYPE = 101,
-  INVALID_ROUTE_METHOD = 102,
-  INVALID_ROUTE_URI = 103,
-  INVALID_ROUTE_CONTROLLER = 104,
-  INVALID_ROUTE_PRIVATE_FLAG = 105
+  INVALID_ROUTES_COLLECTION: 100,
+  INVALID_ROUTE_TYPE: 101,
+  INVALID_ROUTE_METHOD: 102,
+  INVALID_ROUTE_URI: 103,
+  INVALID_ROUTE_CONTROLLER: 104,
+  INVALID_ROUTE_PRIVATE_FLAG: 105
+} as const
+
+export type RESTApiServiceErrorCode = ObjectValues<
+  typeof RESTApiServiceErrorCode
+>
+
+/**
+ * Custom RESTApiServiceError error with errCode support
+ */
+export class RESTApiServiceError extends Error {
+  constructor(message: string, errCode: RESTApiServiceErrorCode) {
+    super(message)
+    /**
+     * When extending the Error class with typescript the new constructor
+     * reference is lost. Because of this "special behavior" of typescript
+     * we need to assign the prototype manually...
+     * More details here :
+     * https://github.com/Microsoft/TypeScript/wiki/Breaking-Changes#extending-built-ins-like-error-array-and-map-may-no-longer-work
+     */
+    Object.setPrototypeOf(this, RESTApiServiceError.prototype)
+
+    this.code = errCode
+  }
+  code: RESTApiServiceErrorCode
 }

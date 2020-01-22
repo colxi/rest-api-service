@@ -20,7 +20,7 @@ export default function initializeRequestRouter(
   routes: RESTApiServiceRoute[]
 ): void {
   service.log(
-    `RESTApiServer : Initializing requests router (routesCount=${routes.length})`
+    `RESTApiService : Initializing requests router (routesCount=${routes.length})`
   )
 
   /*

@@ -9,7 +9,6 @@ import {
   RESTApiServiceRouteDescriptor,
   RESTApiServiceRequestPayload,
   RESTApiServiceRequestResponder,
-  PlainObject,
   ConsoleColor
 } from '@/types'
 
@@ -75,7 +74,7 @@ export default function createRequestInterceptor(
      */
     const responder: RESTApiServiceRequestResponder = (
       statusCode: number,
-      responseData?: PlainObject
+      responseData?: Record<string, unknown>
     ) => {
       expressResponse.status(statusCode).json(responseData || {})
       service.log(

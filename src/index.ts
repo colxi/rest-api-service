@@ -2,16 +2,18 @@ import cors from 'cors'
 import express from 'express'
 import bodyParser from 'body-parser'
 import addRequestId from 'express-request-id'
-import initializeRequestRouter from '@/request-router'
-import defaultOptions from '@/default-options'
-import validateOptions from '@/validate-options'
-import validateRoutes from '@/validate-routes'
 import httpServerWithShutdown from 'http-shutdown'
 
 import http from 'http'
 import https from 'https'
 
+import initializeRequestRouter from '@/request-router'
+import defaultOptions from '@/default-options'
+import validateOptions from '@/validate-options'
+import validateRoutes from '@/validate-routes'
+
 import {
+  RESTApiServiceError,
   RESTApiServiceInstance,
   RESTApiServiceRoute,
   RESTApiServiceOptions,
@@ -117,7 +119,7 @@ export default class RESTApiService implements RESTApiServiceInstance {
     this.logErrors = options.logErrors
 
     this.log(
-      `\nRESTApiServer : Listening at port ${options.port} (protocol=${options.protocol})`
+      `RESTApiService : Listening at port ${options.port} (protocol=${options.protocol})`
     )
 
     /*
@@ -138,7 +140,7 @@ export default class RESTApiService implements RESTApiServiceInstance {
     /**
      * Ready!
      */
-    this.log(`RESTApiServer : Ready!`)
+    this.log(`RESTApiService : Ready!`)
     this.log(`----------------------------------------------------------------`)
   }
   private readonly httpServer: RESTApiServiceHTTPServer
@@ -148,6 +150,8 @@ export default class RESTApiService implements RESTApiServiceInstance {
   public readonly authorizer: RESTApiServiceRequestAuthorizer
 
   public readonly port: number
+
+  public static RESTApiServiceError: typeof RESTApiServiceError = RESTApiServiceError
 
   public logErrors: boolean
 

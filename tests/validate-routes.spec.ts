@@ -2,7 +2,7 @@ import each from 'jest-each'
 
 import validateRoutes, { RoutesValidator } from '../src/validate-routes'
 import RESTApiServiceError from '../src/service-error'
-import { RESTApiServiceErrorCodes } from '../src/types'
+import { RESTApiServiceErrorCode } from '../src/types'
 
 function getErrorFrom(f): RESTApiServiceError {
   try {
@@ -35,7 +35,7 @@ describe('Validate Routes collection', (): void => {
     const t = (): void => RoutesValidator.checkCollectionType(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
-      RESTApiServiceErrorCodes.INVALID_ROUTES_COLLECTION
+      RESTApiServiceErrorCode.INVALID_ROUTES_COLLECTION
     )
   })
 })
@@ -51,7 +51,7 @@ describe('Validate Route type', (): void => {
     const t = (): void => RoutesValidator.checkRouteType(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
-      RESTApiServiceErrorCodes.INVALID_ROUTE_TYPE
+      RESTApiServiceErrorCode.INVALID_ROUTE_TYPE
     )
   })
 })
@@ -68,7 +68,7 @@ describe('Validate Route Method', (): void => {
     const t = (): void => RoutesValidator.checkMethod(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
-      RESTApiServiceErrorCodes.INVALID_ROUTE_METHOD
+      RESTApiServiceErrorCode.INVALID_ROUTE_METHOD
     )
   })
 })
@@ -84,7 +84,7 @@ describe('Validate Route URI', (): void => {
     const t = (): void => RoutesValidator.checkURI(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
-      RESTApiServiceErrorCodes.INVALID_ROUTE_URI
+      RESTApiServiceErrorCode.INVALID_ROUTE_URI
     )
   })
 })
@@ -100,7 +100,7 @@ describe('Validate Route Controller', (): void => {
     const t = (): void => RoutesValidator.checkController(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
-      RESTApiServiceErrorCodes.INVALID_ROUTE_CONTROLLER
+      RESTApiServiceErrorCode.INVALID_ROUTE_CONTROLLER
     )
   })
 })
@@ -116,7 +116,7 @@ describe('Validate Route PrivateFlag', (): void => {
     const t = (): void => RoutesValidator.checkPrivateFlag(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
-      RESTApiServiceErrorCodes.INVALID_ROUTE_PRIVATE_FLAG
+      RESTApiServiceErrorCode.INVALID_ROUTE_PRIVATE_FLAG
     )
   })
 })

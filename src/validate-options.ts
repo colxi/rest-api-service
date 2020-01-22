@@ -1,7 +1,7 @@
 import RESTApiServiceError from '@/service-error'
 import {
   RESTApiServiceOptions,
-  RESTApiServiceErrorCodes,
+  RESTApiServiceErrorCode,
   RESTApiServiceHTTPSCredentials
 } from '@/types'
 
@@ -11,7 +11,7 @@ export class OptionsValidator {
     if (typeof x !== 'object' || x === null || Array.isArray(x)) {
       throw new RESTApiServiceError(
         'Options must be an object',
-        RESTApiServiceErrorCodes.INVALID_OPTIONS_TYPE
+        RESTApiServiceErrorCode.INVALID_OPTIONS_TYPE
       )
     }
   }
@@ -20,7 +20,7 @@ export class OptionsValidator {
     if (typeof x !== 'string' || !['https', 'http'].includes(x)) {
       throw new RESTApiServiceError(
         'Options.protocol must be "http" or "https"',
-        RESTApiServiceErrorCodes.INVALID_OPTIONS_PROTOCOL
+        RESTApiServiceErrorCode.INVALID_OPTIONS_PROTOCOL
       )
     }
   }
@@ -30,7 +30,7 @@ export class OptionsValidator {
     if (typeof x !== 'number') {
       throw new RESTApiServiceError(
         'Options.port must be a number',
-        RESTApiServiceErrorCodes.INVALID_OPTIONS_PORT
+        RESTApiServiceErrorCode.INVALID_OPTIONS_PORT
       )
     }
   }
@@ -40,7 +40,7 @@ export class OptionsValidator {
     if (typeof x !== 'boolean') {
       throw new RESTApiServiceError(
         'Options.verbose must be a boolean',
-        RESTApiServiceErrorCodes.INVALID_OPTIONS_VERBOSE
+        RESTApiServiceErrorCode.INVALID_OPTIONS_VERBOSE
       )
     }
   }
@@ -50,7 +50,7 @@ export class OptionsValidator {
     if (typeof x !== 'object' || x === null || Array.isArray(x)) {
       throw new RESTApiServiceError(
         'Options.cors must be an object',
-        RESTApiServiceErrorCodes.INVALID_OPTIONS_CORS
+        RESTApiServiceErrorCode.INVALID_OPTIONS_CORS
       )
     }
   }
@@ -60,7 +60,7 @@ export class OptionsValidator {
     if (typeof x !== 'function') {
       throw new RESTApiServiceError(
         'Options.auth must be a function',
-        RESTApiServiceErrorCodes.INVALID_OPTIONS_AUTH
+        RESTApiServiceErrorCode.INVALID_OPTIONS_AUTH
       )
     }
   }
@@ -70,7 +70,7 @@ export class OptionsValidator {
     if (typeof x !== 'boolean') {
       throw new RESTApiServiceError(
         'Options.logErrors must be a boolean',
-        RESTApiServiceErrorCodes.INVALID_OPTIONS_LOG_ERRORS
+        RESTApiServiceErrorCode.INVALID_OPTIONS_LOG_ERRORS
       )
     }
   }
@@ -78,19 +78,19 @@ export class OptionsValidator {
     if (typeof x !== 'object' || x === null || Array.isArray(x)) {
       throw new RESTApiServiceError(
         'Options.credentials must be set when protocol="https"',
-        RESTApiServiceErrorCodes.INVALID_OPTIONS_CREDENTIALS
+        RESTApiServiceErrorCode.INVALID_OPTIONS_CREDENTIALS
       )
     }
     if (typeof (x as RESTApiServiceHTTPSCredentials).cert !== 'string') {
       throw new RESTApiServiceError(
         'Options.credentials.cert must be a string',
-        RESTApiServiceErrorCodes.INVALID_OPTIONS_CREDENTIALS_CERTIFICATE
+        RESTApiServiceErrorCode.INVALID_OPTIONS_CREDENTIALS_CERTIFICATE
       )
     }
     if (typeof (x as RESTApiServiceHTTPSCredentials).key !== 'string') {
       throw new RESTApiServiceError(
         'Options.credentials.key must be a string',
-        RESTApiServiceErrorCodes.INVALID_OPTIONS_CREDENTIALS_KEY
+        RESTApiServiceErrorCode.INVALID_OPTIONS_CREDENTIALS_KEY
       )
     }
   }

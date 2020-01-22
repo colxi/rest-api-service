@@ -21,6 +21,8 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "@typescript-eslint/member-delimiter-style": "off",
-    "@typescript-eslint/no-explicit-any": "off"
+    "@typescript-eslint/no-explicit-any": "off",
+    "no-throw-literal": "error",
+    "prefer-promise-reject-errors": "error"
   }
 }

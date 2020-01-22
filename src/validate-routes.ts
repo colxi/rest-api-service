@@ -3,7 +3,7 @@ import RESTApiServiceError from '@/service-error'
 import {
   RESTApiServiceRoute,
   RESTApiServiceRequestMethods,
-  RESTApiServiceErrorCodes
+  RESTApiServiceErrorCode
 } from '@/types'
 
 export class RoutesValidator {
@@ -13,7 +13,7 @@ export class RoutesValidator {
     if (!Array.isArray(r)) {
       throw new RESTApiServiceError(
         'First argument must be an array',
-        RESTApiServiceErrorCodes.INVALID_ROUTES_COLLECTION
+        RESTApiServiceErrorCode.INVALID_ROUTES_COLLECTION
       )
     }
   }
@@ -23,7 +23,7 @@ export class RoutesValidator {
     if (!Array.isArray(x)) {
       throw new RESTApiServiceError(
         `Route in index ${i} must be an array`,
-        RESTApiServiceErrorCodes.INVALID_ROUTE_TYPE
+        RESTApiServiceErrorCode.INVALID_ROUTE_TYPE
       )
     }
   }
@@ -38,7 +38,7 @@ export class RoutesValidator {
         `Invalid http method set for route with index ${i}. Allowed methods are : ${Object.keys(
           RoutesValidator.allowedMethods
         )}`,
-        RESTApiServiceErrorCodes.INVALID_ROUTE_METHOD
+        RESTApiServiceErrorCode.INVALID_ROUTE_METHOD
       )
     }
   }
@@ -48,7 +48,7 @@ export class RoutesValidator {
     if (typeof x !== 'string') {
       throw new RESTApiServiceError(
         `Invalid URI set for route with index ${i} . Expecting a string`,
-        RESTApiServiceErrorCodes.INVALID_ROUTE_URI
+        RESTApiServiceErrorCode.INVALID_ROUTE_URI
       )
     }
   }
@@ -58,7 +58,7 @@ export class RoutesValidator {
     if (typeof x !== 'function') {
       throw new RESTApiServiceError(
         `Invalid Controller set for route with index ${i}. Expecting a function`,
-        RESTApiServiceErrorCodes.INVALID_ROUTE_CONTROLLER
+        RESTApiServiceErrorCode.INVALID_ROUTE_CONTROLLER
       )
     }
   }
@@ -68,7 +68,7 @@ export class RoutesValidator {
     if (typeof x !== 'boolean') {
       throw new RESTApiServiceError(
         `Invalid Private Flag used in route with index ${i}. Expecting a boolean`,
-        RESTApiServiceErrorCodes.INVALID_ROUTE_PRIVATE_FLAG
+        RESTApiServiceErrorCode.INVALID_ROUTE_PRIVATE_FLAG
       )
     }
   }

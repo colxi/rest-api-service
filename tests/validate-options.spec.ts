@@ -2,7 +2,7 @@ import each from 'jest-each'
 
 import validateOptions, { OptionsValidator } from '../src/validate-options'
 import RESTApiServiceError from '../src/service-error'
-import { RESTApiServiceErrorCodes } from '../src/types'
+import { RESTApiServiceErrorCode } from '../src/types'
 
 function getErrorFrom(f): RESTApiServiceError {
   try {
@@ -43,7 +43,7 @@ describe('Validate Options object (direct)', (): void => {
     const t = (): void => validateOptions(a)
     expect(t).toThrowError()
     expect(getErrorFrom(t).code).toBe(
-      RESTApiServiceErrorCodes.INVALID_OPTIONS_CREDENTIALS
+      RESTApiServiceErrorCode.INVALID_OPTIONS_CREDENTIALS
     )
   })
 })
@@ -59,7 +59,7 @@ describe('Validate Options.port', (): void => {
     const t = (): void => OptionsValidator.checkPort(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
-      RESTApiServiceErrorCodes.INVALID_OPTIONS_PORT
+      RESTApiServiceErrorCode.INVALID_OPTIONS_PORT
     )
   })
 })
@@ -80,7 +80,7 @@ describe('Validate Options.protocol', (): void => {
     const t = (): void => OptionsValidator.checkProtocol(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
-      RESTApiServiceErrorCodes.INVALID_OPTIONS_PROTOCOL
+      RESTApiServiceErrorCode.INVALID_OPTIONS_PROTOCOL
     )
   })
 })
@@ -101,7 +101,7 @@ describe('Validate Options.verbose', (): void => {
     const t = (): void => OptionsValidator.checkVerbose(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
-      RESTApiServiceErrorCodes.INVALID_OPTIONS_VERBOSE
+      RESTApiServiceErrorCode.INVALID_OPTIONS_VERBOSE
     )
   })
 })
@@ -122,7 +122,7 @@ describe('Validate Options.logErrors', (): void => {
     const t = (): void => OptionsValidator.checkLogErrors(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
-      RESTApiServiceErrorCodes.INVALID_OPTIONS_LOG_ERRORS
+      RESTApiServiceErrorCode.INVALID_OPTIONS_LOG_ERRORS
     )
   })
 })
@@ -138,7 +138,7 @@ describe('Validate Options.auth', (): void => {
     const t = (): void => OptionsValidator.checkAuth(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
-      RESTApiServiceErrorCodes.INVALID_OPTIONS_AUTH
+      RESTApiServiceErrorCode.INVALID_OPTIONS_AUTH
     )
   })
 })
@@ -154,7 +154,7 @@ describe('Validate Options.cors', (): void => {
     const t = (): void => OptionsValidator.checkCors(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
-      RESTApiServiceErrorCodes.INVALID_OPTIONS_CORS
+      RESTApiServiceErrorCode.INVALID_OPTIONS_CORS
     )
   })
 })
@@ -174,7 +174,7 @@ describe('Validate Options.credentials', (): void => {
     const t = (): void => OptionsValidator.checkCredentials(a)
     expect(t).toThrow(RESTApiServiceError)
     expect(getErrorFrom(t).code).toBe(
-      RESTApiServiceErrorCodes.INVALID_OPTIONS_CREDENTIALS
+      RESTApiServiceErrorCode.INVALID_OPTIONS_CREDENTIALS
     )
   })
 })
